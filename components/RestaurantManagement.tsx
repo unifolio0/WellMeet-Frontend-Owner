@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Store, Clock, Menu as MenuIcon, Image, MapPin, Phone, Globe, Edit, Plus, Trash2 } from 'lucide-react';
+import { useState } from 'react';
+import { Store, Clock, Menu as MenuIcon, MapPin, Phone, Edit, Plus, Trash2 } from 'lucide-react';
 
 const mockRestaurantInfo = {
   name: '라비올로',
@@ -67,7 +67,7 @@ export function RestaurantManagement() {
     { id: 'menu', label: '메뉴 관리', icon: MenuIcon },
   ];
 
-  const dayNames = {
+  const dayNames: Record<string, string> = {
     monday: '월요일',
     tuesday: '화요일',
     wednesday: '수요일',

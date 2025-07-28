@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Star, MessageSquare, ThumbsUp, Clock, Filter } from 'lucide-react';
+import { useState } from 'react';
+import { Star, MessageSquare, ThumbsUp } from 'lucide-react';
 
 const mockReviews = [
   {
@@ -37,7 +37,7 @@ const mockReviews = [
 export function ReviewManagement() {
   const [reviews, setReviews] = useState(mockReviews);
   const [replyText, setReplyText] = useState('');
-  const [editingReplyId, setEditingReplyId] = useState(null);
+  const [editingReplyId, setEditingReplyId] = useState<number | null>(null);
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (

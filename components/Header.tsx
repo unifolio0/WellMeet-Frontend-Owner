@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Bell, Menu, User, LogOut, Settings } from 'lucide-react';
 
 interface HeaderProps {
@@ -8,7 +8,7 @@ interface HeaderProps {
   onToggleSidebar: () => void;
 }
 
-export function Header({ unreadNotifications, onNotificationClick, sidebarCollapsed, onToggleSidebar }: HeaderProps) {
+export function Header({ unreadNotifications, onNotificationClick, onToggleSidebar }: HeaderProps) {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 

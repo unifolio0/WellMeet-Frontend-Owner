@@ -1,4 +1,3 @@
-import React from 'react';
 import { 
   LayoutDashboard, 
   Calendar, 
@@ -11,9 +10,11 @@ import {
   ChevronRight
 } from 'lucide-react';
 
+type Page = 'dashboard' | 'bookings' | 'restaurant' | 'customers' | 'reviews' | 'analytics' | 'settings' | 'notifications';
+
 interface SidebarProps {
-  currentPage: string;
-  onPageChange: (page: string) => void;
+  currentPage: Page;
+  onPageChange: (page: Page) => void;
   collapsed: boolean;
   onToggleCollapse: () => void;
 }
@@ -59,7 +60,7 @@ export function Sidebar({ currentPage, onPageChange, collapsed, onToggleCollapse
             return (
               <li key={item.id}>
                 <button
-                  onClick={() => onPageChange(item.id)}
+                  onClick={() => onPageChange(item.id as Page)}
                   className={`w-full flex items-center px-4 py-3 text-left transition-colors relative ${
                     isActive 
                       ? 'bg-blue-600 text-white border-r-2 border-blue-400' 

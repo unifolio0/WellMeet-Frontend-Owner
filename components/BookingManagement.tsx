@@ -1,5 +1,20 @@
-import React, { useState } from 'react';
-import { Search, Filter, Calendar, Clock, Users, Phone, Mail, MapPin, MessageSquare } from 'lucide-react';
+import { useState } from 'react';
+import { Search, Filter, Calendar, Users, Phone, Mail, MessageSquare } from 'lucide-react';
+
+interface Booking {
+  id: string;
+  customer: string;
+  phone: string;
+  email: string;
+  date: string;
+  time: string;
+  party: number;
+  table: string;
+  status: string;
+  special: string;
+  note: string;
+  isVip: boolean;
+}
 
 const mockBookings = [
   {
@@ -63,7 +78,7 @@ const mockBookings = [
 export function BookingManagement() {
   const [selectedDate, setSelectedDate] = useState('today');
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
 
   const getStatusBadge = (status: string) => {
@@ -81,7 +96,7 @@ export function BookingManagement() {
     }
   };
 
-  const handleBookingClick = (booking: any) => {
+  const handleBookingClick = (booking: Booking) => {
     setSelectedBooking(booking);
     setShowDetailModal(true);
   };

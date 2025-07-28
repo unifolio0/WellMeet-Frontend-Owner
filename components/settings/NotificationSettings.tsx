@@ -1,4 +1,3 @@
-import React from 'react';
 
 const notificationCategories = [
   { type: '예약 관련', items: ['새 예약 요청', '예약 취소', '예약 변경'] },

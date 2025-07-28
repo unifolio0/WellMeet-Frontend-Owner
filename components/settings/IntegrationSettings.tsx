@@ -1,4 +1,3 @@
-import React from 'react';
 
 const integrations = [
   { name: '이메일 (Gmail)', status: 'connected', color: 'green' },

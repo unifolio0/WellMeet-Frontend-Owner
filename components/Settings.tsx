@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Clock, Bell, Link, Shield } from 'lucide-react';
 import { BookingPolicySettings } from './settings/BookingPolicySettings';
 import { NotificationSettings } from './settings/NotificationSettings';

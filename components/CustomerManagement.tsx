@@ -1,5 +1,20 @@
-import React, { useState } from 'react';
-import { Search, Star, Calendar, Phone, Mail, Gift } from 'lucide-react';
+import { useState } from 'react';
+import { Search, Star, Phone, Mail, Gift } from 'lucide-react';
+
+interface Customer {
+  id: number;
+  name: string;
+  phone: string;
+  email: string;
+  visits: number;
+  totalSpent: number;
+  averageRating: number;
+  lastVisit: string;
+  isVip: boolean;
+  birthday: string;
+  preferences: string[];
+  allergies: string[];
+}
 
 const mockCustomers = [
   {
@@ -48,7 +63,7 @@ const mockCustomers = [
 
 export function CustomerManagement() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
 
   const filteredCustomers = mockCustomers.filter(customer =>
@@ -57,7 +72,7 @@ export function CustomerManagement() {
     customer.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleCustomerClick = (customer: any) => {
+  const handleCustomerClick = (customer: Customer) => {
     setSelectedCustomer(customer);
     setShowDetailModal(true);
   };
