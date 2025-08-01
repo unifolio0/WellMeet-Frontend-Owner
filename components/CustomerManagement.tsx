@@ -16,57 +16,14 @@ interface Customer {
   allergies: string[];
 }
 
-const mockCustomers = [
-  {
-    id: 1,
-    name: '김민수',
-    phone: '010-1234-5678',
-    email: 'minsu@email.com',
-    visits: 12,
-    totalSpent: 540000,
-    averageRating: 4.8,
-    lastVisit: '2024-01-10',
-    isVip: false,
-    birthday: '03-15',
-    preferences: ['레드와인', '미디움 스테이크'],
-    allergies: ['새우']
-  },
-  {
-    id: 2,
-    name: '이지은',
-    phone: '010-5678-9012',
-    email: 'jieun@email.com',
-    visits: 8,
-    totalSpent: 320000,
-    averageRating: 4.9,
-    lastVisit: '2024-01-12',
-    isVip: true,
-    birthday: '07-22',
-    preferences: ['화이트와인', '해산물'],
-    allergies: []
-  },
-  {
-    id: 3,
-    name: '박부장',
-    phone: '010-9012-3456',
-    email: 'park@company.com',
-    visits: 15,
-    totalSpent: 680000,
-    averageRating: 4.5,
-    lastVisit: '2024-01-08',
-    isVip: true,
-    birthday: '11-03',
-    preferences: ['단체석', '접대용'],
-    allergies: ['견과류']
-  }
-];
+const customers: Customer[] = [];
 
 export function CustomerManagement() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
 
-  const filteredCustomers = mockCustomers.filter(customer =>
+  const filteredCustomers = customers.filter(customer =>
     customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     customer.phone.includes(searchTerm) ||
     customer.email.toLowerCase().includes(searchTerm.toLowerCase())
@@ -177,6 +134,11 @@ export function CustomerManagement() {
               ))}
             </tbody>
           </table>
+          {customers.length === 0 && (
+            <div className="py-12 text-center">
+              <p className="text-gray-500">등록된 고객이 없습니다.</p>
+            </div>
+          )}
         </div>
       </div>
 

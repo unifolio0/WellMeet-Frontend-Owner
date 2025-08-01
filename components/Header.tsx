@@ -1,16 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Bell, Menu, User, LogOut, Settings } from 'lucide-react';
 
 interface HeaderProps {
   unreadNotifications: number;
   onNotificationClick: () => void;
+  onProfileClick: () => void;
+  onAccountClick: () => void;
+  onLogout: () => void;
   sidebarCollapsed: boolean;
   onToggleSidebar: () => void;
 }
 
-export function Header({ unreadNotifications, onNotificationClick, onToggleSidebar }: HeaderProps) {
+export function Header({ unreadNotifications, onNotificationClick, onProfileClick, onAccountClick, onLogout, onToggleSidebar }: HeaderProps) {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -18,6 +22,19 @@ export function Header({ unreadNotifications, onNotificationClick, onToggleSideb
     }, 1000);
 
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
+        setShowProfileMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   const formatTime = (date: Date) => {
@@ -62,7 +79,7 @@ export function Header({ unreadNotifications, onNotificationClick, onToggleSideb
           </button>
 
           {/* 프로필 메뉴 */}
-          <div className="relative">
+          <div className="relative" ref={profileMenuRef}>
             <button
               onClick={() => setShowProfileMenu(!showProfileMenu)}
               className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -78,16 +95,34 @@ export function Header({ unreadNotifications, onNotificationClick, onToggleSideb
 
             {showProfileMenu && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
-                <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2">
+                <button 
+                  onClick={() => {
+                    onProfileClick();
+                    setShowProfileMenu(false);
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2"
+                >
                   <User size={16} />
                   <span>프로필 설정</span>
                 </button>
-                <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2">
+                <button 
+                  onClick={() => {
+                    onAccountClick();
+                    setShowProfileMenu(false);
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2"
+                >
                   <Settings size={16} />
                   <span>계정 설정</span>
                 </button>
                 <hr className="my-1" />
-                <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center space-x-2">
+                <button 
+                  onClick={() => {
+                    onLogout();
+                    setShowProfileMenu(false);
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center space-x-2"
+                >
                   <LogOut size={16} />
                   <span>로그아웃</span>
                 </button>

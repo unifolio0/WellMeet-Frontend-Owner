@@ -1,61 +1,26 @@
 import { useState } from 'react';
 import { Store, Clock, Menu as MenuIcon, MapPin, Phone, Edit, Plus, Trash2 } from 'lucide-react';
 
-const mockRestaurantInfo = {
-  name: '라비올로',
-  category: '이탈리안',
-  address: '서울시 강남구 논현로 123',
-  phone: '02-1234-5678',
-  description: '정통 이탈리안 요리를 선보이는 라비올로입니다. 신선한 재료와 전통 레시피로 만든 파스타와 리조또를 맛보세요.',
-  images: [
-    'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400',
-    'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400',
-    'https://images.unsplash.com/photo-1590846406792-0adc7f938f1d?w=400'
-  ]
+const restaurantInfo = {
+  name: '',
+  category: '',
+  address: '',
+  phone: '',
+  description: '',
+  images: []
 };
 
-const mockOperatingHours = {
-  monday: { open: '11:00', close: '22:00', breakStart: '15:00', breakEnd: '17:00', closed: false },
-  tuesday: { open: '11:00', close: '22:00', breakStart: '15:00', breakEnd: '17:00', closed: false },
-  wednesday: { open: '11:00', close: '22:00', breakStart: '15:00', breakEnd: '17:00', closed: false },
-  thursday: { open: '11:00', close: '22:00', breakStart: '15:00', breakEnd: '17:00', closed: false },
-  friday: { open: '11:00', close: '23:00', breakStart: '15:00', breakEnd: '17:00', closed: false },
-  saturday: { open: '11:00', close: '23:00', breakStart: '15:00', breakEnd: '17:00', closed: false },
-  sunday: { open: '', close: '', breakStart: '', breakEnd: '', closed: true }
+const operatingHours = {
+  monday: { open: '', close: '', breakStart: '', breakEnd: '', closed: false },
+  tuesday: { open: '', close: '', breakStart: '', breakEnd: '', closed: false },
+  wednesday: { open: '', close: '', breakStart: '', breakEnd: '', closed: false },
+  thursday: { open: '', close: '', breakStart: '', breakEnd: '', closed: false },
+  friday: { open: '', close: '', breakStart: '', breakEnd: '', closed: false },
+  saturday: { open: '', close: '', breakStart: '', breakEnd: '', closed: false },
+  sunday: { open: '', close: '', breakStart: '', breakEnd: '', closed: false }
 };
 
-const mockMenuItems = [
-  {
-    id: 1,
-    category: '파스타',
-    name: '트러플 크림 파스타',
-    description: '진한 트러플 크림 소스와 페투치네의 완벽한 조화',
-    price: 28000,
-    image: 'https://images.unsplash.com/photo-1621996346565-e3dbc353d2e5?w=200',
-    available: true,
-    signature: true
-  },
-  {
-    id: 2,
-    category: '파스타',
-    name: '알리오 올리오',
-    description: '마늘과 올리브오일의 심플한 맛',
-    price: 18000,
-    image: 'https://images.unsplash.com/photo-1572441713132-51c75654db73?w=200',
-    available: true,
-    signature: false
-  },
-  {
-    id: 3,
-    category: '리조또',
-    name: '해산물 리조또',
-    description: '신선한 해산물과 크리미한 리조또',
-    price: 32000,
-    image: 'https://images.unsplash.com/photo-1586816001966-79b736744398?w=200',
-    available: false,
-    signature: true
-  }
-];
+const menuItems: any[] = [];
 
 export function RestaurantManagement() {
   const [activeTab, setActiveTab] = useState('info');
@@ -97,11 +62,11 @@ export function RestaurantManagement() {
             {isEditing ? (
               <input 
                 type="text" 
-                defaultValue={mockRestaurantInfo.name}
+                defaultValue={restaurantInfo.name}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             ) : (
-              <p className="text-gray-900 font-medium">{mockRestaurantInfo.name}</p>
+              <p className="text-gray-900 font-medium">{restaurantInfo.name}</p>
             )}
           </div>
 
@@ -116,7 +81,7 @@ export function RestaurantManagement() {
                 <option value="western">양식</option>
               </select>
             ) : (
-              <p className="text-gray-900">{mockRestaurantInfo.category}</p>
+              <p className="text-gray-900">{restaurantInfo.category}</p>
             )}
           </div>
 
@@ -125,13 +90,13 @@ export function RestaurantManagement() {
             {isEditing ? (
               <input 
                 type="text" 
-                defaultValue={mockRestaurantInfo.address}
+                defaultValue={restaurantInfo.address}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             ) : (
               <div className="flex items-center space-x-2">
                 <MapPin size={16} className="text-gray-400" />
-                <p className="text-gray-900">{mockRestaurantInfo.address}</p>
+                <p className="text-gray-900">{restaurantInfo.address}</p>
               </div>
             )}
           </div>
@@ -141,13 +106,13 @@ export function RestaurantManagement() {
             {isEditing ? (
               <input 
                 type="tel" 
-                defaultValue={mockRestaurantInfo.phone}
+                defaultValue={restaurantInfo.phone}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             ) : (
               <div className="flex items-center space-x-2">
                 <Phone size={16} className="text-gray-400" />
-                <p className="text-gray-900">{mockRestaurantInfo.phone}</p>
+                <p className="text-gray-900">{restaurantInfo.phone}</p>
               </div>
             )}
           </div>
@@ -157,11 +122,11 @@ export function RestaurantManagement() {
             {isEditing ? (
               <textarea 
                 rows={4}
-                defaultValue={mockRestaurantInfo.description}
+                defaultValue={restaurantInfo.description}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             ) : (
-              <p className="text-gray-700 leading-relaxed">{mockRestaurantInfo.description}</p>
+              <p className="text-gray-700 leading-relaxed">{restaurantInfo.description}</p>
             )}
           </div>
         </div>
@@ -169,22 +134,28 @@ export function RestaurantManagement() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">매장 이미지</label>
           <div className="grid grid-cols-2 gap-4">
-            {mockRestaurantInfo.images.map((image, index) => (
-              <div key={index} className="relative group">
-                <img 
-                  src={image} 
-                  alt={`매장 이미지 ${index + 1}`}
-                  className="w-full h-32 object-cover rounded-lg"
-                />
-                {isEditing && (
-                  <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-lg">
-                    <button className="p-2 bg-red-600 text-white rounded-full hover:bg-red-700">
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                )}
+            {restaurantInfo.images.length > 0 ? (
+              restaurantInfo.images.map((image, index) => (
+                <div key={index} className="relative group">
+                  <img 
+                    src={image} 
+                    alt={`매장 이미지 ${index + 1}`}
+                    className="w-full h-32 object-cover rounded-lg"
+                  />
+                  {isEditing && (
+                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-lg">
+                      <button className="p-2 bg-red-600 text-white rounded-full hover:bg-red-700">
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))
+            ) : (
+              <div className="col-span-2 text-center py-8 text-gray-500">
+                <p>등록된 이미지가 없습니다.</p>
               </div>
-            ))}
+            )}
             {isEditing && (
               <button className="w-full h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-500 hover:border-gray-400 hover:text-gray-600 transition-colors">
                 <div className="text-center">
@@ -221,7 +192,7 @@ export function RestaurantManagement() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {Object.entries(mockOperatingHours).map(([day, hours]) => (
+              {Object.entries(operatingHours).map(([day, hours]) => (
                 <tr key={day} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {dayNames[day]}
@@ -272,7 +243,8 @@ export function RestaurantManagement() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {mockMenuItems.map((item) => (
+        {menuItems.length > 0 ? (
+          menuItems.map((item) => (
           <div key={item.id} className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
             <div className="relative">
               <img 
@@ -325,7 +297,12 @@ export function RestaurantManagement() {
               </div>
             </div>
           </div>
-        ))}
+          ))
+        ) : (
+          <div className="col-span-full text-center py-12">
+            <p className="text-gray-500">등록된 메뉴가 없습니다.</p>
+          </div>
+        )}
       </div>
     </div>
   );

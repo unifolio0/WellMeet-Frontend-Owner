@@ -1,41 +1,10 @@
 import { useState } from 'react';
 import { Star, MessageSquare, ThumbsUp } from 'lucide-react';
 
-const mockReviews = [
-  {
-    id: 1,
-    customer: '이지은',
-    rating: 5,
-    content: '정말 맛있었어요! 트러플 파스타가 특히 인상깊었습니다. 다음에 또 올게요.',
-    date: '2024-01-15',
-    reply: '',
-    helpful: 3,
-    replied: false
-  },
-  {
-    id: 2,
-    customer: '김민수',
-    rating: 4,
-    content: '분위기도 좋고 음식도 맛있었습니다. 다만 예약 시간보다 조금 늦게 안내되어 아쉬웠어요.',
-    date: '2024-01-14',
-    reply: '소중한 리뷰 감사합니다. 대기 시간으로 불편을 드려 죄송합니다. 더욱 정확한 시간 안내를 위해 노력하겠습니다.',
-    helpful: 2,
-    replied: true
-  },
-  {
-    id: 3,
-    customer: '박부장',
-    rating: 5,
-    content: '회사 회식으로 방문했는데 모든 직원들이 만족했습니다. 서비스도 훌륭하고 음식 퀄리티도 최고예요!',
-    date: '2024-01-12',
-    reply: '정말 감사합니다! 앞으로도 최상의 서비스로 보답하겠습니다.',
-    helpful: 5,
-    replied: true
-  }
-];
+const reviewData: any[] = [];
 
 export function ReviewManagement() {
-  const [reviews, setReviews] = useState(mockReviews);
+  const [reviews, setReviews] = useState(reviewData);
   const [replyText, setReplyText] = useState('');
   const [editingReplyId, setEditingReplyId] = useState<number | null>(null);
 
@@ -95,7 +64,8 @@ export function ReviewManagement() {
 
       {/* 리뷰 목록 */}
       <div className="space-y-4">
-        {reviews.map((review) => (
+        {reviews.length > 0 ? (
+          reviews.map((review) => (
           <div key={review.id} className="bg-white rounded-lg shadow p-6">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center space-x-3">
@@ -180,7 +150,12 @@ export function ReviewManagement() {
               </div>
             )}
           </div>
-        ))}
+          ))
+        ) : (
+          <div className="bg-white rounded-lg shadow p-12 text-center">
+            <p className="text-gray-500">아직 작성된 리뷰가 없습니다.</p>
+          </div>
+        )}
       </div>
     </div>
   );

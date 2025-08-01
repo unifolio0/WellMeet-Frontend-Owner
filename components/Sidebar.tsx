@@ -10,7 +10,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 
-type Page = 'dashboard' | 'bookings' | 'restaurant' | 'customers' | 'reviews' | 'analytics' | 'settings' | 'notifications';
+type Page = 'dashboard' | 'bookings' | 'restaurant' | 'customers' | 'reviews' | 'analytics' | 'settings' | 'notifications' | 'profile' | 'account';
 
 interface SidebarProps {
   currentPage: Page;

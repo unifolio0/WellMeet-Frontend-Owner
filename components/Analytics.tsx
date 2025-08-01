@@ -2,40 +2,19 @@ import { useState } from 'react';
 import { Calendar, TrendingUp, Users, DollarSign } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-const mockWeeklyData = [
-  { day: '월', reservations: 15, revenue: 450000 },
-  { day: '화', reservations: 18, revenue: 520000 },
-  { day: '수', reservations: 12, revenue: 380000 },
-  { day: '목', reservations: 22, revenue: 680000 },
-  { day: '금', reservations: 28, revenue: 850000 },
-  { day: '토', reservations: 32, revenue: 950000 },
-  { day: '일', reservations: 20, revenue: 600000 },
-];
+const weeklyData: { day: string; reservations: number; revenue: number }[] = [];
 
-const mockCustomerTypes = [
-  { name: '신규 고객', value: 35, color: '#3182CE' },
-  { name: '재방문 고객', value: 45, color: '#38A169' },
-  { name: 'VIP 고객', value: 20, color: '#D69E2E' },
-];
+const customerTypes: { name: string; value: number; color: string }[] = [];
 
-const mockTimeSlots = [
-  { time: '12:00', bookings: 8 },
-  { time: '13:00', bookings: 12 },
-  { time: '14:00', bookings: 6 },
-  { time: '17:00', bookings: 4 },
-  { time: '18:00', bookings: 15 },
-  { time: '19:00', bookings: 25 },
-  { time: '20:00', bookings: 22 },
-  { time: '21:00', bookings: 18 },
-];
+const timeSlots: { time: string; bookings: number }[] = [];
 
 export function Analytics() {
   const [selectedPeriod, setSelectedPeriod] = useState('week');
 
-  const totalReservations = mockWeeklyData.reduce((sum, data) => sum + data.reservations, 0);
-  const totalRevenue = mockWeeklyData.reduce((sum, data) => sum + data.revenue, 0);
-  const averagePartySize = 3.2;
-  const satisfactionScore = 4.6;
+  const totalReservations = weeklyData.reduce((sum, data) => sum + data.reservations, 0);
+  const totalRevenue = weeklyData.reduce((sum, data) => sum + data.revenue, 0);
+  const averagePartySize = 0;
+  const satisfactionScore = 0;
 
   return (
     <div className="space-y-6">
@@ -128,7 +107,7 @@ export function Analytics() {
           </div>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={mockWeeklyData}>
+              <BarChart data={weeklyData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="day" />
                 <YAxis />
@@ -146,7 +125,7 @@ export function Analytics() {
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={mockCustomerTypes}
+                  data={customerTypes}
                   cx="50%"
                   cy="50%"
                   innerRadius={60}
@@ -154,7 +133,7 @@ export function Analytics() {
                   dataKey="value"
                   label={({ name, value }) => `${name}: ${value}%`}
                 >
-                  {mockCustomerTypes.map((entry, index) => (
+                  {customerTypes.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
@@ -169,7 +148,7 @@ export function Analytics() {
           <h3 className="text-lg font-semibold text-gray-900 mb-4">시간대별 예약 분포</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={mockTimeSlots}>
+              <LineChart data={timeSlots}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="time" />
                 <YAxis />
@@ -191,7 +170,7 @@ export function Analytics() {
           <h3 className="text-lg font-semibold text-gray-900 mb-4">매출 추이</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={mockWeeklyData}>
+              <LineChart data={weeklyData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="day" />
                 <YAxis tickFormatter={(value) => `${Math.round(value / 10000)}만`} />
@@ -209,28 +188,12 @@ export function Analytics() {
         </div>
       </div>
 
-      {/* 인사이트 카드 */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">📊 이번 주 인사이트</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-white rounded-lg p-4">
-            <h4 className="font-medium text-gray-900 mb-2">🚀 성장 포인트</h4>
-            <ul className="text-sm text-gray-700 space-y-1">
-              <li>• 금요일 저녁 예약이 28% 증가했습니다</li>
-              <li>• VIP 고객 재방문율이 15% 상승했습니다</li>
-              <li>• 고객 만족도가 전주 대비 0.2점 향상되었습니다</li>
-            </ul>
-          </div>
-          <div className="bg-white rounded-lg p-4">
-            <h4 className="font-medium text-gray-900 mb-2">💡 개선 제안</h4>
-            <ul className="text-sm text-gray-700 space-y-1">
-              <li>• 화요일 점심시간 프로모션을 고려해보세요</li>
-              <li>• 19-20시 대기시간 단축 방안이 필요합니다</li>
-              <li>• 신규 고객 대상 리워드 프로그램을 추천합니다</li>
-            </ul>
-          </div>
+      {/* 데이터 없음 안내 */}
+      {weeklyData.length === 0 && (
+        <div className="bg-gray-50 rounded-lg p-12 text-center">
+          <p className="text-gray-500">아직 표시할 데이터가 없습니다.</p>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -1,89 +1,33 @@
 import { useState } from 'react';
-import { Bell, Calendar, Star, AlertCircle, Settings, Check, Trash2, Search } from 'lucide-react';
+import { Bell, Settings, Check, Trash2, Search } from 'lucide-react';
 
 interface NotificationCenterProps {
   onNotificationsRead: () => void;
 }
 
-const mockNotifications = [
-  {
-    id: 1,
-    type: 'booking',
-    title: '새로운 예약 요청',
-    message: '김민수님이 01-20 19:00에 2명으로 예약을 요청했습니다.',
-    time: '5분 전',
-    read: false,
-    icon: Calendar,
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-100'
-  },
-  {
-    id: 2,
-    type: 'review',
-    title: '새로운 리뷰',
-    message: '이지은님이 ⭐⭐⭐⭐⭐ 리뷰를 남겼습니다: "정말 맛있었어요!"',
-    time: '1시간 전',
-    read: false,
-    icon: Star,
-    color: 'text-yellow-600',
-    bgColor: 'bg-yellow-100'
-  },
-  {
-    id: 3,
-    type: 'booking',
-    title: '예약 취소',
-    message: '박부장님이 01-20 18:30 예약을 취소했습니다.',
-    time: '2시간 전',
-    read: true,
-    icon: Calendar,
-    color: 'text-red-600',
-    bgColor: 'bg-red-100'
-  },
-  {
-    id: 4,
-    type: 'system',
-    title: '시스템 알림',
-    message: '월간 매출 리포트가 준비되었습니다.',
-    time: '1일 전',
-    read: true,
-    icon: AlertCircle,
-    color: 'text-gray-600',
-    bgColor: 'bg-gray-100'
-  },
-  {
-    id: 5,
-    type: 'booking',
-    title: '예약 확정',
-    message: '최고객님의 예약이 자동으로 확정되었습니다.',
-    time: '2일 전',
-    read: true,
-    icon: Calendar,
-    color: 'text-green-600',
-    bgColor: 'bg-green-100'
-  }
-];
+const notifications: any[] = [];
 
 const notificationSettings = {
-  booking: { email: true, sms: false, kakao: true },
-  review: { email: true, sms: false, kakao: true },
-  system: { email: true, sms: false, kakao: false }
+  booking: { email: false, sms: false, kakao: false },
+  review: { email: false, sms: false, kakao: false },
+  system: { email: false, sms: false, kakao: false }
 };
 
 export function NotificationCenter({ onNotificationsRead }: NotificationCenterProps) {
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [notifications, setNotifications] = useState(mockNotifications);
+  const [notificationList, setNotificationList] = useState(notifications);
   const [showSettings, setShowSettings] = useState(false);
 
   const filterOptions = [
-    { id: 'all', label: '전체', count: notifications.length },
-    { id: 'unread', label: '미읽음', count: notifications.filter(n => !n.read).length },
-    { id: 'booking', label: '예약', count: notifications.filter(n => n.type === 'booking').length },
-    { id: 'review', label: '리뷰', count: notifications.filter(n => n.type === 'review').length },
-    { id: 'system', label: '시스템', count: notifications.filter(n => n.type === 'system').length }
+    { id: 'all', label: '전체', count: notificationList.length },
+    { id: 'unread', label: '미읽음', count: notificationList.filter(n => !n.read).length },
+    { id: 'booking', label: '예약', count: notificationList.filter(n => n.type === 'booking').length },
+    { id: 'review', label: '리뷰', count: notificationList.filter(n => n.type === 'review').length },
+    { id: 'system', label: '시스템', count: notificationList.filter(n => n.type === 'system').length }
   ];
 
-  const filteredNotifications = notifications.filter(notification => {
+  const filteredNotifications = notificationList.filter(notification => {
     const matchesFilter = selectedFilter === 'all' || 
                           selectedFilter === notification.type ||
                           (selectedFilter === 'unread' && !notification.read);
@@ -95,18 +39,18 @@ export function NotificationCenter({ onNotificationsRead }: NotificationCenterPr
   });
 
   const handleMarkAsRead = (id: number) => {
-    setNotifications(prev => prev.map(n => 
+    setNotificationList(prev => prev.map(n => 
       n.id === id ? { ...n, read: true } : n
     ));
   };
 
   const handleMarkAllAsRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    setNotificationList(prev => prev.map(n => ({ ...n, read: true })));
     onNotificationsRead();
   };
 
   const handleDeleteNotification = (id: number) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
+    setNotificationList(prev => prev.filter(n => n.id !== id));
   };
 
   const getTypeLabel = (type: string) => {
@@ -251,8 +195,8 @@ export function NotificationCenter({ onNotificationsRead }: NotificationCenterPr
                   }`}
                 >
                   <div className="flex items-start space-x-4">
-                    <div className={`p-2 rounded-full ${notification.bgColor}`}>
-                      <Icon size={20} className={notification.color} />
+                    <div className={`p-2 rounded-full ${notification.bgColor || 'bg-gray-100'}`}>
+                      {Icon && <Icon size={20} className={notification.color || 'text-gray-600'} />}
                     </div>
                     
                     <div className="flex-1 min-w-0">

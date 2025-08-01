@@ -1,57 +1,40 @@
 import { Calendar, TrendingUp, Star, Clock, CheckCircle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-const mockTimeData = [
-  { time: '12:00', reservations: 2 },
-  { time: '13:00', reservations: 4 },
-  { time: '14:00', reservations: 3 },
-  { time: '15:00', reservations: 1 },
-  { time: '16:00', reservations: 0 },
-  { time: '17:00', reservations: 2 },
-  { time: '18:00', reservations: 8 },
-  { time: '19:00', reservations: 12 },
-  { time: '20:00', reservations: 10 },
-  { time: '21:00', reservations: 6 },
-  { time: '22:00', reservations: 3 },
-];
+const timeData: { time: string; reservations: number }[] = [];
 
-const mockRecentBookings = [
-  { id: 1, customer: '김민수', time: '19:00', party: 2, status: 'confirmed', special: '창가 자리 요청' },
-  { id: 2, customer: '이지은', time: '20:30', party: 4, status: 'pending', special: '생일 케이크' },
-  { id: 3, customer: '박부장', time: '18:30', party: 6, status: 'confirmed', special: '' },
-  { id: 4, customer: '정수영', time: '19:30', party:3, status: 'pending', special: '유아차 필요' },
-];
+const recentBookings: { id: number; customer: string; time: string; party: number; status: string; special: string }[] = [];
 
 const kpiCards = [
   {
     title: '오늘 예약',
-    value: '12건',
-    change: '+2건',
-    changeType: 'increase',
+    value: '0건',
+    change: '-',
+    changeType: 'neutral',
     icon: Calendar,
     color: 'bg-blue-500'
   },
   {
     title: '확정 예약',
-    value: '8건',
-    change: '67%',
-    changeType: 'increase',
+    value: '0건',
+    change: '-',
+    changeType: 'neutral',
     icon: CheckCircle,
     color: 'bg-green-500'
   },
   {
     title: '대기 중',
-    value: '3건',
-    change: '-1건',
-    changeType: 'decrease',
+    value: '0건',
+    change: '-',
+    changeType: 'neutral',
     icon: Clock,
     color: 'bg-yellow-500'
   },
   {
     title: '예상 매출',
-    value: '850,000원',
-    change: '+15%',
-    changeType: 'increase',
+    value: '0원',
+    change: '-',
+    changeType: 'neutral',
     icon: TrendingUp,
     color: 'bg-purple-500'
   }
@@ -110,7 +93,7 @@ export function Dashboard() {
           <h3 className="text-lg font-semibold text-gray-900 mb-4">시간대별 예약 현황</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={mockTimeData}>
+              <BarChart data={timeData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="time" />
                 <YAxis />
@@ -175,7 +158,7 @@ export function Dashboard() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {mockRecentBookings.map((booking) => (
+              {recentBookings.map((booking) => (
                 <tr key={booking.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">{booking.customer}</div>
@@ -199,6 +182,11 @@ export function Dashboard() {
               ))}
             </tbody>
           </table>
+          {recentBookings.length === 0 && (
+            <div className="py-12 text-center">
+              <p className="text-gray-500">오늘 예약이 없습니다.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

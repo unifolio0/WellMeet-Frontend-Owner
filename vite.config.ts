@@ -12,5 +12,8 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './')
     }
+  },
+  server: {
+    // historyApiFallback is handled by default in Vite dev server
   }
 })

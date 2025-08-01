@@ -49,3 +49,4 @@ desktop.ini
 .pnpm-debug.log*
 package-lock.json.backup
 yarn.lock.backup
+.clauade

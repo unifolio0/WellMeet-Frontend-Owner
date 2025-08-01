@@ -16,64 +16,7 @@ interface Booking {
   isVip: boolean;
 }
 
-const mockBookings = [
-  {
-    id: 'BK-240115-001',
-    customer: '김민수',
-    phone: '010-1234-5678',
-    email: 'minsu@email.com',
-    date: '2024-01-15',
-    time: '19:00',
-    party: 2,
-    table: 'T3',
-    status: 'pending',
-    special: '창가 자리 요청합니다.',
-    note: '단골 고객',
-    isVip: false
-  },
-  {
-    id: 'BK-240115-002',
-    customer: '이지은',
-    phone: '010-5678-9012',
-    email: 'jieun@email.com',
-    date: '2024-01-15',
-    time: '20:30',
-    party: 4,
-    table: 'T5',
-    status: 'confirmed',
-    special: '생일 케이크 서프라이즈 도움 주세요',
-    note: 'VIP 고객',
-    isVip: true
-  },
-  {
-    id: 'BK-240115-003',
-    customer: '박부장',
-    phone: '010-9012-3456',
-    email: 'park@company.com',
-    date: '2024-01-15',
-    time: '18:30',
-    party: 6,
-    table: 'T1',
-    status: 'confirmed',
-    special: '',
-    note: '회사 회식',
-    isVip: false
-  },
-  {
-    id: 'BK-240115-004',
-    customer: '정수영',
-    phone: '010-3456-7890',
-    email: 'sooyoung@email.com',
-    date: '2024-01-15',
-    time: '19:30',
-    party: 3,
-    table: '',
-    status: 'pending',
-    special: '유아차 필요합니다',
-    note: '',
-    isVip: false
-  }
-];
+const bookings: Booking[] = [];
 
 export function BookingManagement() {
   const [selectedDate, setSelectedDate] = useState('today');
@@ -165,8 +108,8 @@ export function BookingManagement() {
 
         <div className="mt-4 flex items-center space-x-4 text-sm text-gray-600">
           <span>📅 2024-01-15 (월)</span>
-          <span>총 {mockBookings.length}건 예약</span>
-          <span>대기 중 {mockBookings.filter(b => b.status === 'pending').length}건</span>
+          <span>총 {bookings.length}건 예약</span>
+          <span>대기 중 {bookings.filter(b => b.status === 'pending').length}건</span>
         </div>
       </div>
 
@@ -186,7 +129,7 @@ export function BookingManagement() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {mockBookings.map((booking) => (
+              {bookings.map((booking) => (
                 <tr key={booking.id} className="hover:bg-gray-50 cursor-pointer" onClick={() => handleBookingClick(booking)}>
                   <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(booking.status)}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">{booking.time}</td>
@@ -244,6 +187,11 @@ export function BookingManagement() {
               ))}
             </tbody>
           </table>
+          {bookings.length === 0 && (
+            <div className="py-12 text-center">
+              <p className="text-gray-500">예약이 없습니다.</p>
+            </div>
+          )}
         </div>
       </div>
 
