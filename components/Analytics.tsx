@@ -1,20 +1,88 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Calendar, TrendingUp, Users, DollarSign } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-
-const weeklyData: { day: string; reservations: number; revenue: number }[] = [];
-
-const customerTypes: { name: string; value: number; color: string }[] = [];
-
-const timeSlots: { time: string; bookings: number }[] = [];
+import { analyticsService } from '@lib/api/services';
+import type { DashboardAnalytics, WeeklyData, CustomerTypeData, TimeSlotData, RevenueTrendData, AnalyticsPeriod } from '@lib/api/services';
 
 export function Analytics() {
-  const [selectedPeriod, setSelectedPeriod] = useState('week');
+  const [selectedPeriod, setSelectedPeriod] = useState<AnalyticsPeriod>('week');
+  const [analytics, setAnalytics] = useState<DashboardAnalytics | null>(null);
+  const [weeklyData, setWeeklyData] = useState<WeeklyData[]>([]);
+  const [customerTypes, setCustomerTypes] = useState<CustomerTypeData[]>([]);
+  const [timeSlots, setTimeSlots] = useState<TimeSlotData[]>([]);
+  const [revenueTrend, setRevenueTrend] = useState<RevenueTrendData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const totalReservations = weeklyData.reduce((sum, data) => sum + data.reservations, 0);
-  const totalRevenue = weeklyData.reduce((sum, data) => sum + data.revenue, 0);
-  const averagePartySize = 0;
-  const satisfactionScore = 0;
+  useEffect(() => {
+    fetchData();
+  }, [selectedPeriod]);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const [
+        analyticsResponse,
+        weeklyResponse,
+        customerTypesResponse,
+        timeSlotsResponse,
+        revenueResponse
+      ] = await Promise.all([
+        analyticsService.getDashboardAnalytics({ period: selectedPeriod }),
+        analyticsService.getWeeklyData({ startDate: '', endDate: '' }),
+        analyticsService.getCustomerTypes(),
+        analyticsService.getTimeSlots(),
+        analyticsService.getRevenueTrend({ period: 'week' })
+      ]);
+
+      setAnalytics(analyticsResponse);
+      setWeeklyData(weeklyResponse);
+      setCustomerTypes(customerTypesResponse);
+      setTimeSlots(timeSlotsResponse);
+      setRevenueTrend(revenueResponse);
+    } catch (err) {
+      console.error('Analytics data fetch error:', err);
+      setError('통계 데이터를 불러오는데 실패했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">통계 분석</h1>
+          <p className="text-gray-600">매장 운영 데이터를 분석하고 인사이트를 얻으세요</p>
+        </div>
+        <div className="flex justify-center items-center h-64">
+          <div className="text-gray-500">데이터를 불러오는 중...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">통계 분석</h1>
+          <p className="text-gray-600">매장 운영 데이터를 분석하고 인사이트를 얻으세요</p>
+        </div>
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="text-red-800">{error}</div>
+          <button 
+            onClick={() => fetchData()} 
+            className="mt-2 text-red-600 underline"
+          >
+            다시 시도
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -29,7 +97,7 @@ export function Analytics() {
           {['week', 'month', 'quarter'].map((period) => (
             <button
               key={period}
-              onClick={() => setSelectedPeriod(period)}
+              onClick={() => setSelectedPeriod(period as AnalyticsPeriod)}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 selectedPeriod === period
                   ? 'bg-blue-600 text-white'
@@ -50,8 +118,8 @@ export function Analytics() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">총 예약 수</p>
-              <p className="text-2xl font-bold text-gray-900">{totalReservations}건</p>
-              <p className="text-sm text-green-600">+12% 전주 대비</p>
+              <p className="text-2xl font-bold text-gray-900">{analytics?.stats?.totalBookings || 0}건</p>
+              <p className="text-sm text-green-600">전주 대비 증가</p>
             </div>
             <div className="p-3 bg-blue-100 rounded-full">
               <Calendar size={24} className="text-blue-600" />
@@ -63,8 +131,8 @@ export function Analytics() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">총 매출</p>
-              <p className="text-2xl font-bold text-gray-900">{totalRevenue.toLocaleString()}원</p>
-              <p className="text-sm text-green-600">+8% 전주 대비</p>
+              <p className="text-2xl font-bold text-gray-900">{analytics?.stats?.totalRevenue?.toLocaleString() || 0}원</p>
+              <p className="text-sm text-green-600">전주 대비 증가</p>
             </div>
             <div className="p-3 bg-green-100 rounded-full">
               <DollarSign size={24} className="text-green-600" />
@@ -76,7 +144,7 @@ export function Analytics() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">평균 파티 크기</p>
-              <p className="text-2xl font-bold text-gray-900">{averagePartySize}명</p>
+              <p className="text-2xl font-bold text-gray-900">0명</p>
               <p className="text-sm text-gray-600">전주와 동일</p>
             </div>
             <div className="p-3 bg-purple-100 rounded-full">
@@ -89,8 +157,8 @@ export function Analytics() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">고객 만족도</p>
-              <p className="text-2xl font-bold text-gray-900">{satisfactionScore}/5.0</p>
-              <p className="text-sm text-green-600">+0.2 전주 대비</p>
+              <p className="text-2xl font-bold text-gray-900">0/5.0</p>
+              <p className="text-sm text-green-600">전주 대비 증가</p>
             </div>
             <div className="p-3 bg-yellow-100 rounded-full">
               <TrendingUp size={24} className="text-yellow-600" />
@@ -170,9 +238,9 @@ export function Analytics() {
           <h3 className="text-lg font-semibold text-gray-900 mb-4">매출 추이</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={weeklyData}>
+              <LineChart data={revenueTrend}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="day" />
+                <XAxis dataKey="date" />
                 <YAxis tickFormatter={(value) => `${Math.round(value / 10000)}만`} />
                 <Tooltip formatter={(value) => [value.toLocaleString() + '원', '매출']} />
                 <Line 
@@ -189,7 +257,7 @@ export function Analytics() {
       </div>
 
       {/* 데이터 없음 안내 */}
-      {weeklyData.length === 0 && (
+      {(!analytics || (weeklyData.length === 0 && customerTypes.length === 0 && timeSlots.length === 0)) && (
         <div className="bg-gray-50 rounded-lg p-12 text-center">
           <p className="text-gray-500">아직 표시할 데이터가 없습니다.</p>
         </div>

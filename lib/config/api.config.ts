@@ -1,0 +1,103 @@
+export const API_CONFIG = {
+  BASE_URL: process.env.VITE_API_BASE_URL || 'http://localhost:8080',
+  TIMEOUT: 30000,
+  HEADERS: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  },
+} as const;
+
+export const API_ENDPOINTS = {
+  AUTH: {
+    LOGIN: '/api/auth/login',
+    LOGOUT: '/api/auth/logout',
+    REFRESH: '/api/auth/refresh',
+  },
+  DASHBOARD: {
+    TODAY_STATS: '/api/dashboard/today-stats',
+    RECENT_BOOKINGS: '/api/dashboard/recent-bookings',
+    KPI: '/api/dashboard/kpi',
+    TIME_SLOTS: '/api/dashboard/time-slots',
+  },
+  BOOKINGS: {
+    LIST: '/api/bookings',
+    DETAIL: (id: number) => `/api/bookings/${id}`,
+    UPDATE_STATUS: (id: number) => `/api/bookings/${id}/status`,
+    UPDATE: (id: number) => `/api/bookings/${id}`,
+    DELETE: (id: number) => `/api/bookings/${id}`,
+    SEARCH: '/api/bookings/search',
+  },
+  CUSTOMERS: {
+    LIST: '/api/customers',
+    DETAIL: (id: number) => `/api/customers/${id}`,
+    CREATE: '/api/customers',
+    UPDATE: (id: number) => `/api/customers/${id}`,
+    DELETE: (id: number) => `/api/customers/${id}`,
+    BOOKINGS: (id: number) => `/api/customers/${id}/bookings`,
+    REVIEWS: (id: number) => `/api/customers/${id}/reviews`,
+    UPDATE_VIP: (id: number) => `/api/customers/${id}/vip`,
+  },
+  REVIEWS: {
+    LIST: '/api/reviews',
+    STATS: '/api/reviews/stats',
+    ADD_REPLY: (id: number) => `/api/reviews/${id}/reply`,
+    UPDATE_REPLY: (id: number) => `/api/reviews/${id}/reply`,
+    DELETE_REPLY: (id: number) => `/api/reviews/${id}/reply`,
+  },
+  ANALYTICS: {
+    DASHBOARD: '/api/analytics/dashboard',
+    WEEKLY_DATA: '/api/analytics/weekly-data',
+    CUSTOMER_TYPES: '/api/analytics/customer-types',
+    TIME_SLOTS: '/api/analytics/time-slots',
+    REVENUE_TREND: '/api/analytics/revenue-trend',
+  },
+  RESTAURANT: {
+    INFO: '/api/restaurant/info',
+    UPDATE_INFO: '/api/restaurant/info',
+    UPLOAD_IMAGE: '/api/restaurant/images',
+    DELETE_IMAGE: (id: number) => `/api/restaurant/images/${id}`,
+    OPERATING_HOURS: '/api/restaurant/operating-hours',
+    UPDATE_OPERATING_HOURS: '/api/restaurant/operating-hours',
+    MENU: {
+      LIST: '/api/restaurant/menu',
+      CREATE: '/api/restaurant/menu',
+      UPDATE: (id: number) => `/api/restaurant/menu/${id}`,
+      DELETE: (id: number) => `/api/restaurant/menu/${id}`,
+      UPDATE_AVAILABILITY: (id: number) => `/api/restaurant/menu/${id}/availability`,
+    },
+  },
+  NOTIFICATIONS: {
+    LIST: '/api/notifications',
+    MARK_READ: (id: number) => `/api/notifications/${id}/read`,
+    MARK_ALL_READ: '/api/notifications/read-all',
+    DELETE: (id: number) => `/api/notifications/${id}`,
+    SETTINGS: '/api/notifications/settings',
+    UPDATE_SETTINGS: '/api/notifications/settings',
+  },
+  PROFILE: {
+    GET: '/api/profile',
+    UPDATE: '/api/profile',
+    UPLOAD_IMAGE: '/api/profile/image',
+    DELETE_IMAGE: '/api/profile/image',
+  },
+  ACCOUNT: {
+    CHANGE_PASSWORD: '/api/account/password',
+    TWO_FACTOR: '/api/account/two-factor',
+    SESSIONS: '/api/account/sessions',
+    TERMINATE_SESSION: (id: string) => `/api/account/sessions/${id}`,
+    TERMINATE_OTHER_SESSIONS: '/api/account/sessions/others',
+    LOGIN_HISTORY: '/api/account/login-history',
+    DELETE_ACCOUNT: '/api/account',
+  },
+  SETTINGS: {
+    BOOKING_POLICY: '/api/settings/booking-policy',
+    UPDATE_BOOKING_POLICY: '/api/settings/booking-policy',
+    ACCESS_LOGS: '/api/settings/access-logs',
+    INTEGRATIONS: {
+      LIST: '/api/settings/integrations',
+      CONNECT: (service: string) => `/api/settings/integrations/${service}/connect`,
+      DISCONNECT: (service: string) => `/api/settings/integrations/${service}/disconnect`,
+      TEST: (service: string) => `/api/settings/integrations/${service}/test`,
+    },
+  },
+} as const;

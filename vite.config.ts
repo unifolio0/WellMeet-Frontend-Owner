@@ -10,10 +10,17 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './')
+      '@': path.resolve(__dirname, './'),
+      '@components': path.resolve(__dirname, './components'),
+      '@lib': path.resolve(__dirname, './lib'),
+      '@hooks': path.resolve(__dirname, './hooks'),
+      '@styles': path.resolve(__dirname, './styles'),
     }
   },
   server: {
     // historyApiFallback is handled by default in Vite dev server
+  },
+  define: {
+    'process.env': process.env
   }
 })

@@ -1,46 +1,120 @@
+import { useState, useEffect } from 'react';
 import { Calendar, TrendingUp, Star, Clock, CheckCircle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-
-const timeData: { time: string; reservations: number }[] = [];
-
-const recentBookings: { id: number; customer: string; time: string; party: number; status: string; special: string }[] = [];
-
-const kpiCards = [
-  {
-    title: '오늘 예약',
-    value: '0건',
-    change: '-',
-    changeType: 'neutral',
-    icon: Calendar,
-    color: 'bg-blue-500'
-  },
-  {
-    title: '확정 예약',
-    value: '0건',
-    change: '-',
-    changeType: 'neutral',
-    icon: CheckCircle,
-    color: 'bg-green-500'
-  },
-  {
-    title: '대기 중',
-    value: '0건',
-    change: '-',
-    changeType: 'neutral',
-    icon: Clock,
-    color: 'bg-yellow-500'
-  },
-  {
-    title: '예상 매출',
-    value: '0원',
-    change: '-',
-    changeType: 'neutral',
-    icon: TrendingUp,
-    color: 'bg-purple-500'
-  }
-];
+import { dashboardService } from '@lib/api/services';
+import type { TodayStats, RecentBooking, TimeSlot } from '@lib/api/services';
 
 export function Dashboard() {
+  const [todayStats, setTodayStats] = useState<TodayStats | null>(null);
+  const [recentBookings, setRecentBookings] = useState<RecentBooking[]>([]);
+  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
+  const [, setKpiData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const today = new Date().toISOString().split('T')[0];
+        
+        const [statsData, bookingsData, timeSlotsData, kpiData] = await Promise.all([
+          dashboardService.getTodayStats(),
+          dashboardService.getRecentBookings({ limit: 10 }),
+          dashboardService.getTimeSlots({ date: today }),
+          dashboardService.getKpi()
+        ]);
+
+        setTodayStats(statsData);
+        setRecentBookings(bookingsData);
+        setTimeSlots(timeSlotsData);
+        setKpiData(kpiData);
+      } catch (err) {
+        console.error('Dashboard data fetch error:', err);
+        setError('데이터를 불러오는데 실패했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  const kpiCards = [
+    {
+      title: '오늘 예약',
+      value: todayStats ? `${todayStats.todayBookings}건` : '로딩...',
+      change: '-',
+      changeType: 'neutral',
+      icon: Calendar,
+      color: 'bg-blue-500'
+    },
+    {
+      title: '확정 예약',
+      value: todayStats ? `${todayStats.confirmedBookings}건` : '로딩...',
+      change: '-',
+      changeType: 'neutral',
+      icon: CheckCircle,
+      color: 'bg-green-500'
+    },
+    {
+      title: '대기 중',
+      value: todayStats ? `${todayStats.pendingBookings}건` : '로딩...',
+      change: '-',
+      changeType: 'neutral',
+      icon: Clock,
+      color: 'bg-yellow-500'
+    },
+    {
+      title: '예상 매출',
+      value: todayStats ? `${todayStats.expectedRevenue.toLocaleString()}원` : '로딩...',
+      change: '-',
+      changeType: 'neutral',
+      icon: TrendingUp,
+      color: 'bg-purple-500'
+    }
+  ];
+
+  const timeData = timeSlots.map(slot => ({
+    time: slot.time,
+    reservations: slot.reservations
+  }));
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">대시보드</h1>
+          <p className="text-gray-600">라비올로 레스토랑 운영 현황</p>
+        </div>
+        <div className="flex justify-center items-center h-64">
+          <div className="text-gray-500">데이터를 불러오는 중...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">대시보드</h1>
+          <p className="text-gray-600">라비올로 레스토랑 운영 현황</p>
+        </div>
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="text-red-800">{error}</div>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="mt-2 text-red-600 underline"
+          >
+            다시 시도
+          </button>
+        </div>
+      </div>
+    );
+  }
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'confirmed':
@@ -161,9 +235,19 @@ export function Dashboard() {
               {recentBookings.map((booking) => (
                 <tr key={booking.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{booking.customer}</div>
+                    <div className="text-sm font-medium text-gray-900">{booking.customer.name}</div>
+                    {booking.customer.isVip && (
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 ml-2">
+                        VIP
+                      </span>
+                    )}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{booking.time}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {new Date(booking.time).toLocaleTimeString('ko-KR', {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{booking.party}명</td>
                   <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(booking.status)}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
