@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Bell, Menu, User, LogOut, Settings } from 'lucide-react';
+import { FullPushButton } from './FullPushButton';
 
 interface HeaderProps {
   unreadNotifications: number;
@@ -65,6 +66,9 @@ export function Header({ unreadNotifications, onNotificationClick, onProfileClic
         </div>
 
         <div className="flex items-center space-x-4">
+          {/* 푸시 알림 버튼 */}
+          <FullPushButton />
+          
           {/* 알림 버튼 */}
           <button
             onClick={onNotificationClick}

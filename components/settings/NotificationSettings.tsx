@@ -1,4 +1,6 @@
 
+import { PushNotificationSettings } from '../PushNotificationSettings';
+
 const notificationCategories = [
   { type: '예약 관련', items: ['새 예약 요청', '예약 취소', '예약 변경'] },
   { type: '리뷰 관련', items: ['새 리뷰 작성', '평점 변경'] },
@@ -9,6 +11,9 @@ export function NotificationSettings() {
   return (
     <div className="space-y-6">
       <h3>알림 설정</h3>
+      
+      {/* 푸시 알림 설정 섹션 */}
+      <PushNotificationSettings />
       
       <div className="space-y-6">
         {notificationCategories.map((category) => (

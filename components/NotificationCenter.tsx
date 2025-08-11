@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Bell, Settings, Check, Trash2, Search } from 'lucide-react';
+import { PushTestPage } from './PushTestPage';
 
 interface NotificationCenterProps {
   onNotificationsRead: () => void;
@@ -18,6 +19,7 @@ export function NotificationCenter({ onNotificationsRead }: NotificationCenterPr
   const [searchTerm, setSearchTerm] = useState('');
   const [notificationList, setNotificationList] = useState(notifications);
   const [showSettings, setShowSettings] = useState(false);
+  const [showPushTest, setShowPushTest] = useState(false);
 
   const filterOptions = [
     { id: 'all', label: '전체', count: notificationList.length },
@@ -71,6 +73,13 @@ export function NotificationCenter({ onNotificationsRead }: NotificationCenterPr
           <p className="text-gray-600">새로운 알림과 중요한 업데이트를 확인하세요</p>
         </div>
         <div className="flex space-x-3">
+          <button 
+            onClick={() => setShowPushTest(!showPushTest)}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2"
+          >
+            <Bell size={16} />
+            <span>푸시 테스트</span>
+          </button>
           <button 
             onClick={handleMarkAllAsRead}
             className="px-4 py-2 text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
@@ -252,6 +261,13 @@ export function NotificationCenter({ onNotificationsRead }: NotificationCenterPr
           </div>
         )}
       </div>
+
+      {/* 푸시 테스트 페이지 */}
+      {showPushTest && (
+        <div className="mt-6">
+          <PushTestPage />
+        </div>
+      )}
     </div>
   );
 }
