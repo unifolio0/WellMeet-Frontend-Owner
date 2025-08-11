@@ -79,7 +79,7 @@ class NotificationService {
       const success = await subscription.unsubscribe();
       
       if (success) {
-        await this.removeSubscriptionFromServer();
+        await this.removeSubscriptionFromServer(subscription);
         console.log('Push subscription cancelled');
       }
       
@@ -124,7 +124,7 @@ class NotificationService {
         body: JSON.stringify(subscriptionData)
       });
 
-      if (!response.ok) {
+      if (response.ok) {
         // 개발 환경에서 404 에러는 무시 (백엔드가 없을 수 있음)
         if (response.status === 404 && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
           console.warn('Backend API not available in development, continuing anyway');
@@ -146,7 +146,7 @@ class NotificationService {
     }
   }
 
-  async removeSubscriptionFromServer() {
+  async removeSubscriptionFromServer(subscription?: PushSubscription) {
     const token = this.getAuthToken();
     
     if (!token && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
@@ -155,17 +155,25 @@ class NotificationService {
     }
 
     try {
-      const headers: Record<string, string> = {};
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
+      // endpoint를 body에 포함하여 전송
+      const body = subscription ? JSON.stringify({
+        endpoint: subscription.endpoint
+      }) : undefined;
+
       const response = await fetch(NotificationAPI.unsubscribe(), {
         method: 'DELETE',
-        headers
+        headers,
+        body
       });
 
-      if (!response.ok) {
+      if (response.ok) {
         // 개발 환경에서 404 에러는 무시
         if (response.status === 404 && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
           console.warn('Backend API not available in development, continuing anyway');

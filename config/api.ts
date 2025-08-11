@@ -17,7 +17,7 @@ const API_CONFIG = {
   ENDPOINTS: {
     NOTIFICATIONS: {
       SUBSCRIBE: '/notification/subscribe?userId=1',
-      UNSUBSCRIBE: '/notification/unsubscribe', 
+      UNSUBSCRIBE: '/notification/unsubscribe?userId=1', 
       TEST_PUSH: '/notification/test-push?userId=1',
       SEND: '/notification/send',
       SYNC: '/notification/sync',

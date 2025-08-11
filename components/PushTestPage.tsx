@@ -54,9 +54,9 @@ export function PushTestPage() {
             실제 푸시 알림을 받으려면 다음 API가 필요합니다:
           </p>
           <ul className="list-disc list-inside space-y-1 text-sm">
-            <li><code>POST /api/notifications/subscribe</code> - 구독 정보 저장</li>
-            <li><code>DELETE /api/notifications/unsubscribe</code> - 구독 해제</li>
-            <li><code>POST /api/notifications/test-push</code> - 테스트 푸시 전송</li>
+            <li><code>POST /notification/subscribe</code> - 구독 정보 저장</li>
+            <li><code>DELETE /notification/unsubscribe</code> - 구독 해제</li>
+            <li><code>POST /notification/test-push</code> - 테스트 푸시 전송</li>
           </ul>
         </div>
 

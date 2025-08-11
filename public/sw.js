@@ -23,9 +23,12 @@ self.addEventListener('push', (event) => {
     return;
   }
 
+  let payload;
   let notificationData;
+  
   try {
-    notificationData = event.data.json();
+    payload = event.data.json();
+    notificationData = payload;
   } catch (error) {
     console.error('[Service Worker] Error parsing push data:', error);
     notificationData = {
@@ -36,13 +39,13 @@ self.addEventListener('push', (event) => {
     };
   }
 
-  const { title, body, icon, badge, data } = notificationData;
+  const { title, body, icon, badge, data, vibrate, requireInteraction } = notificationData;
 
   const options = {
     body: body || 'You have a new notification',
     icon: icon || '/icon-192x192.png',
     badge: badge || '/badge-72x72.png',
-    vibrate: [200, 100, 200],
+    vibrate: vibrate || [200, 100, 200],
     data: {
       ...data,
       dateOfArrival: Date.now(),
@@ -60,8 +63,9 @@ self.addEventListener('push', (event) => {
         icon: '/images/xmark.png'
       }
     ],
-    tag: 'notification-tag',
-    requireInteraction: false
+    // 각 알림마다 고유한 태그 생성 (타임스탬프 + 랜덤)
+    tag: notificationData.tag || `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    requireInteraction: requireInteraction !== undefined ? requireInteraction : false
   };
 
   event.waitUntil(
