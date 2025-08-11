@@ -2,10 +2,7 @@ import { getVapidKey } from '../utils/vapid';
 import { NotificationAPI } from '../config/api';
 
 class NotificationService {
-  constructor() {
-    this.serviceWorkerRegistration = null;
-    this.subscription = null;
-  }
+  private serviceWorkerRegistration: ServiceWorkerRegistration | null = null;
 
   async registerServiceWorker() {
     if (!('serviceWorker' in navigator)) {
@@ -38,8 +35,7 @@ class NotificationService {
       await this.registerServiceWorker();
     }
 
-    const subscription = await this.serviceWorkerRegistration.pushManager.getSubscription();
-    this.subscription = subscription;
+    const subscription = await this.serviceWorkerRegistration!.pushManager.getSubscription();
     return subscription;
   }
 
@@ -56,13 +52,12 @@ class NotificationService {
     try {
       console.log('Attempting push subscription with VAPID key...');
       
-      const subscription = await this.serviceWorkerRegistration.pushManager.subscribe({
+      const subscription = await this.serviceWorkerRegistration!.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: getVapidKey()
       });
 
-      this.subscription = subscription;
-      console.log('Push subscription created:', subscription);
+        console.log('Push subscription created:', subscription);
 
       await this.sendSubscriptionToServer(subscription);
       return subscription;
@@ -85,7 +80,6 @@ class NotificationService {
       
       if (success) {
         await this.removeSubscriptionFromServer();
-        this.subscription = null;
         console.log('Push subscription cancelled');
       }
       
@@ -96,7 +90,7 @@ class NotificationService {
     }
   }
 
-  async sendSubscriptionToServer(subscription) {
+  async sendSubscriptionToServer(subscription: PushSubscription) {
     const token = this.getAuthToken();
     
     if (!token) {
@@ -110,13 +104,13 @@ class NotificationService {
     const subscriptionData = {
       endpoint: subscription.endpoint,
       keys: {
-        p256dh: this.arrayBufferToBase64(subscription.getKey('p256dh')),
-        auth: this.arrayBufferToBase64(subscription.getKey('auth'))
+        p256dh: this.arrayBufferToBase64(subscription.getKey('p256dh')!),
+        auth: this.arrayBufferToBase64(subscription.getKey('auth')!)
       }
     };
 
     try {
-      const headers = {
+      const headers: Record<string, string> = {
         'Content-Type': 'application/json'
       };
       
@@ -161,7 +155,7 @@ class NotificationService {
     }
 
     try {
-      const headers = {};
+      const headers: Record<string, string> = {};
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
@@ -199,7 +193,7 @@ class NotificationService {
     return token;
   }
 
-  arrayBufferToBase64(buffer) {
+  arrayBufferToBase64(buffer: ArrayBuffer): string {
     const bytes = new Uint8Array(buffer);
     let binary = '';
     for (let i = 0; i < bytes.byteLength; i++) {
@@ -239,7 +233,7 @@ class NotificationService {
         body: 'This is a test notification from WellMeet',
         icon: '/icon-192x192.png',
         badge: '/badge-72x72.png',
-        vibrate: [200, 100, 200],
+        // vibrate: [200, 100, 200], // Removed as not in standard NotificationOptions
         tag: 'test-notification'
       });
 
@@ -260,12 +254,12 @@ class NotificationService {
       await this.registerServiceWorker();
     }
 
-    if ('sync' in this.serviceWorkerRegistration) {
+    if ('sync' in this.serviceWorkerRegistration!) {
       try {
-        await this.serviceWorkerRegistration.sync.register('sync-notifications');
+        await (this.serviceWorkerRegistration as any).sync.register('sync-notifications');
         console.log('Background sync registered');
         return true;
-      } catch (error) {
+      } catch (error: any) {
         console.error('Background sync registration failed:', error);
         return false;
       }

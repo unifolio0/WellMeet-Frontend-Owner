@@ -96,7 +96,7 @@ export function FullPushButton() {
           }, 1000);
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Push notification error:', error);
       alert('오류가 발생했습니다: ' + error.message);
     } finally {

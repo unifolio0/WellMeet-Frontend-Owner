@@ -1,4 +1,14 @@
 // API 설정 중앙 관리
+declare global {
+  interface ImportMeta {
+    env: {
+      VITE_API_BASE_URL?: string;
+      DEV: boolean;
+      MODE: string;
+    };
+  }
+}
+
 const API_CONFIG = {
   // 환경 변수에서 API URL을 가져오고, 없으면 기본값 사용
   BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080',
@@ -17,7 +27,7 @@ const API_CONFIG = {
 };
 
 // 완전한 URL을 생성하는 헬퍼 함수
-export function getApiUrl(endpoint) {
+export function getApiUrl(endpoint: string): string {
   return `${API_CONFIG.BASE_URL}${endpoint}`;
 }
 

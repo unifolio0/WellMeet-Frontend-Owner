@@ -26,7 +26,7 @@ export function PushTestPage() {
       } else {
         setMessage('백엔드 API가 없거나 응답하지 않습니다.');
       }
-    } catch (error) {
+    } catch (error: any) {
       setMessage('네트워크 오류: ' + error.message);
     }
   };

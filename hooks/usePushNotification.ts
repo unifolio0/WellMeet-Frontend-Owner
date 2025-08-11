@@ -3,10 +3,10 @@ import notificationService from '../services/notificationService';
 
 export function usePushNotification() {
   const [isSupported, setIsSupported] = useState(false);
-  const [permission, setPermission] = useState('default');
+  const [permission, setPermission] = useState<NotificationPermission | 'unsupported'>('default');
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const checkSupport = () => {
@@ -30,7 +30,7 @@ export function usePushNotification() {
         try {
           const subscribed = await notificationService.checkSubscriptionStatus();
           setIsSubscribed(subscribed);
-        } catch (error) {
+        } catch (error: any) {
           console.error('Error checking subscription:', error);
           setError(error.message);
         }
@@ -53,7 +53,7 @@ export function usePushNotification() {
       const newPermission = await notificationService.requestPermission();
       setPermission(newPermission);
       return newPermission === 'granted';
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error requesting permission:', error);
       setError(error.message);
       return false;
@@ -83,7 +83,7 @@ export function usePushNotification() {
       await notificationService.subscribe();
       setIsSubscribed(true);
       return true;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error subscribing to push notifications:', error);
       setError(error.message);
       return false;
@@ -107,7 +107,7 @@ export function usePushNotification() {
         setIsSubscribed(false);
       }
       return success;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error unsubscribing from push notifications:', error);
       setError(error.message);
       return false;
@@ -128,7 +128,7 @@ export function usePushNotification() {
     try {
       const success = await notificationService.testNotification();
       return success;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error sending test notification:', error);
       setError(error.message);
       return false;

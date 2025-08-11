@@ -4,7 +4,7 @@
 
 export const VAPID_PUBLIC_KEY = "BCjLRdYi3EapfKAjZlIONNWb7PgUGnSo9-HDedbcd02o0zwriW-93jZ35Ufqu_C4jFtcKuHCdsGA_3TYyAHXqxs";
 
-export function urlBase64ToUint8Array(base64String) {
+export function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
   const base64 = (base64String + padding)
     .replace(/\-/g, '+')
@@ -19,6 +19,6 @@ export function urlBase64ToUint8Array(base64String) {
   return outputArray;
 }
 
-export function getVapidKey() {
+export function getVapidKey(): Uint8Array {
   return urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
 }

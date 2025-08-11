@@ -19,7 +19,7 @@ export function PushNotificationSettings() {
     clearError
   } = usePushNotification();
 
-  const handleToggle = async (checked) => {
+  const handleToggle = async (checked: boolean) => {
     if (checked) {
       await subscribe();
     } else {
