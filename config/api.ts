@@ -16,12 +16,12 @@ const API_CONFIG = {
   // API 엔드포인트들
   ENDPOINTS: {
     NOTIFICATIONS: {
-      SUBSCRIBE: '/api/notifications/subscribe',
-      UNSUBSCRIBE: '/api/notifications/unsubscribe', 
-      TEST_PUSH: '/api/notifications/test-push',
-      SEND: '/api/notifications/send',
-      SYNC: '/api/notifications/sync',
-      STATUS: '/api/notifications/subscription-status'
+      SUBSCRIBE: '/notification/subscribe?userId=1',
+      UNSUBSCRIBE: '/notification/unsubscribe', 
+      TEST_PUSH: '/notification/test-push?userId=1',
+      SEND: '/notification/send',
+      SYNC: '/notification/sync',
+      STATUS: '/notification/subscription-status'
     }
   }
 };

@@ -1,8 +1,8 @@
 // API 설정 (서비스 워커용)
 const API_BASE_URL = 'http://localhost:8080';
 const API_ENDPOINTS = {
-  SUBSCRIBE: `${API_BASE_URL}/api/notifications/subscribe`,
-  SYNC: `${API_BASE_URL}/api/notifications/sync`
+  SUBSCRIBE: `${API_BASE_URL}/notification/subscribe`,
+  SYNC: `${API_BASE_URL}/notification/sync`
 };
 
 self.addEventListener('install', (event) => {
